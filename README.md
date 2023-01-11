@@ -6,7 +6,7 @@
 
 > 作者：PoilZero（日日生鸽）
 >
-> 博客：http://poilzero.sipc115.club
+> 博客：http://poilzero.cn
 >
 > 第一次尝试研究修改器，选择pvz一方面是因为着是我童年的回忆
 >
@@ -54,7 +54,7 @@ CE模糊搜索自增变量，最后归零找到某一卡片时间变量，然后
 
 `VA：0048728C    8347 24 01      add dword ptr ds:[edi+0x24],0x1`
 
-![image.png](http://poilzero.sipc115.club/usr/uploads/2021/08/3813004126.png)
+![image.png](http://poilzero.cn/usr/uploads/2021/08/3813004126.png)
 
 使用OD attach找到逻辑，当`ds:[edi+0x24]<=ds:[edi+0x28]`时，继续循环，当反条件成立时，卡片恢复
 
@@ -86,7 +86,7 @@ CE模糊搜索自增变量，最后归零找到某一卡片时间变量，然后
 * 获得阳光：`00430A11 - 01 88 60550000  - add [eax+00005560],ecx`
 * 消耗阳光：`0041BA76 - 89 B7 60550000  - mov [edi+00005560],esi`
 
-![image.png](http://poilzero.sipc115.club/usr/uploads/2021/08/2695049977.png)
+![image.png](http://poilzero.cn/usr/uploads/2021/08/2695049977.png)
 
 同上，修改种植不损耗阳光
 
